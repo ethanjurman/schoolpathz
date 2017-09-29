@@ -1,17 +1,30 @@
 const Tram = require('tram-one')
-const html = Tram.html()
+const html = Tram.html({
+  CourseCheckBox: require('./CourseCheckBox'),
+  SubjectCourseOutline: require('./SubjectCourseOutline')
+})
 
-module.exports = ({studentName}) => {
+module.exports = ({studentName, studentCurriculum}) => {
+  const coursesDOM = Object.keys(studentCurriculum).map((subject) => {
+    const courses = studentCurriculum[subject].map((course) => {
+      return html`
+        <CourseCheckBox
+          courseName=${course.name}
+          courseCompleted=${course.completed}>
+        </CourseCheckBox>
+      `
+    })
+    return html`
+      <SubjectCourseOutline
+        subjectName=${subject}
+        subjectCourses=${courses}>
+      </SubjectCourseOutline
+    `
+  })
   return html`
     <div>
-      ${studentName}
-      3 science credits with 1 regents exam
-      4 english credits with the ELA 3 regents exam
-      3 math credits with 2 regents exams
-      4 social studies credits with 3 regents exams
-      2 gym credits
-      1 art credit
-      1 language credit and passed regents exam
+      <h3> ${studentName} </h3>
+      ${coursesDOM}
       <hr />
     </div>
   `
